@@ -57,28 +57,28 @@ if __name__ == "__main__":
 
     new_data = pd.read_csv("G:/anomali1/data/transaksi_baru.csv", delimiter=';')
 
-    # Preprocess data
+    
     X_new_scaled = preprocess_new_data(new_data, scaler, le_product, le_payment)
 
-    # Predict scores
+    
     predictions = model.predict(X_new_scaled).flatten()
 
-    # Visualize predictions
+    
     visualize_predictions(predictions)
 
-    # Jika data memiliki label, tambahkan evaluasi
+    
     if 'Label' in new_data.columns:
         y_true = new_data['Label'].values
-        # Threshold optimal berdasarkan ROC AUC
+       
         optimal_threshold = determine_optimal_threshold(y_true, predictions)
-        # Evaluasi prediksi
+       
         evaluate_predictions(y_true, predictions, optimal_threshold)
 
-    # Threshold dinamis berdasarkan persentil ke-90
+    
     dynamic_threshold = np.percentile(predictions, 90)
     print(f"\nThreshold dinamis berdasarkan persentil ke-90: {dynamic_threshold:.4f}")
 
-    # Prediksi berdasarkan threshold dinamis
+    
     for i, pred in enumerate(predictions):
         status = "Anomali" if pred > dynamic_threshold else "Normal"
         print(f"Transaksi {i + 1}: {status} (Skor: {pred:.4f})")
