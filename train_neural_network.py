@@ -6,27 +6,27 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
 
 def load_and_preprocess_data(file_anomali, file_normal):
-    # Load data
+   
     data_anomali = pd.read_csv(file_anomali, delimiter=';')
     data_normal = pd.read_csv(file_normal, delimiter=';')
 
-    # Tambahkan label manual
+    
     data_anomali['Label'] = 1
     data_normal['Label'] = 0
 
-    # Gabungkan data
+    
     data = pd.concat([data_anomali, data_normal], ignore_index=True)
 
-    # Encode 'Produk' and 'Pembayaran'
+   
     le_product = LabelEncoder()
     le_payment = LabelEncoder()
     data['Produk'] = le_product.fit_transform(data['Produk'])
     data['Pembayaran'] = le_payment.fit_transform(data['Pembayaran'])
 
-    # Tambahkan kolom 'Harga Total Terkalkulasi'
+    
     data['Harga Total Terkalkulasi'] = data['Jumlah'] * data['Harga Satuan']
 
-    # Kolom untuk training
+    
     X = data[['Produk', 'Jumlah', 'Total Harga', 'Pembayaran', 'Harga Satuan', 'Harga Total Terkalkulasi']]
     y = data['Label']
 
@@ -55,7 +55,6 @@ if __name__ == "__main__":
         "G:/anomali1/data/normal.csv"
     )
     train_model(X, y)
-    # Save scalers and encoders
     np.save("G:/anomali1/models/scaler_mean.npy", scaler.mean_)
     np.save("G:/anomali1/models/scaler_std.npy", scaler.scale_)
     np.save("G:/anomali1/models/label_product.npy", le_product.classes_)
